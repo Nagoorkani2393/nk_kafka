@@ -8,27 +8,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        with:
-          version: 8
-          run_install: false
-
-      - name: Install Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: pnpm
-          registry-url: https://registry.npmjs.org/
+      - run: npm ci
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Publish 🚀
-        shell: bash
-        run: pnpm publish --access public --no-git-checks
+  publish-gpr:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: https://npm.pkg.github.com/
+      - run: npm ci
+      - run: npm publish --registry https://npm.pkg.github.com --access=private
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
