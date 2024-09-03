@@ -1,6 +1,12 @@
 # nk_kafka
 A nest-js kafka module
 
+```bash
+$ npm i nk-kafka
+
+$ npm install nk-kafka
+```
+
 ## Kafka module
 
 ```bash
